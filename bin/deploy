@@ -3,21 +3,20 @@ set -e
 
 export DAPP_NO_SAVE=1
 export ETH_GAS=4000000
+export ETH_KEYSTORE=/home/aftnix/.dapp/testnet/8545/keystore/
+export FOUNDERS_KEY=0x40298bEf6D91762787479c5F2CA162627bB8d528
+token=0x1125d7564f4b0919020d7fb61b4bf13637c4ea7c
 
-token=$(set -x; dapp create DSToken \
-  $(seth --to-bytes32 $(seth --from-ascii EOS))
-)
+sale=$(set -x; dapp create EkkDist 7 \
+   $(seth --to-uint256 $(seth --to-wei 1000000000 eth)) \
+   $(date +%s -d '1 second') \
+   $(date +%s -d '1 hour') \
+   $(seth --to-uint256 $(seth --to-wei 100000000 eth)) \
+   $FOUNDERS_KEY
+ )
 
-sale=$(set -x; dapp create EOSSale 7 \
-  $(seth --to-uint256 $(seth --to-wei 1000000000 eth)) \
-  $(date +%s -d '1 second') \
-  $(date +%s -d '1 hour') \
-  $(seth --to-uint256 $(seth --to-wei 100000000 eth)) \
-  $(seth --from-ascii abcdefghijklmnopqrstuvwxyzABCDEFG)
-)
+ (set -x; seth send "$token" "setOwner(address)" "$sale")
+ (set -x; seth send "$sale" "initialize(address)" "$token")
 
-(set -x; seth send "$token" "setOwner(address)" "$sale")
-(set -x; seth send "$sale" "initialize(address)" "$token")
-
-echo "eos_token=$token"
-echo "eos_sale=$sale"
+echo "token=$token"
+echo "sale=$sale"
