@@ -2,15 +2,18 @@
 set -e
 
 export DAPP_NO_SAVE=1
-export ETH_GAS=4000000
-export ETH_KEYSTORE=/home/aftnix/.dapp/testnet/8545/keystore/
-export FOUNDERS_KEY=0x40298bEf6D91762787479c5F2CA162627bB8d528
-token=0x1125d7564f4b0919020d7fb61b4bf13637c4ea7c
+#export ETH_GAS=4000000
+export ETH_KEYSTORE=/home/aftnix/.ethereum/keystore
+export FOUNDERS_KEY=0x276aead77fc6e0e334060135b67be7e36bf3e1d8
+export ETH_FROM=0x59e595f0fe941245d06e93927ba4d3f803757442
+token=$(set -x; dapp create DSToken \
+  $(seth --to-bytes32 $(seth --from-ascii EKK))
+)
 
-sale=$(set -x; dapp create EkkDist 7 \
+sale=$(set -x; dapp create EKKDist 7 \
    $(seth --to-uint256 $(seth --to-wei 1000000000 eth)) \
    $(date +%s -d '1 second') \
-   $(date +%s -d '1 hour') \
+   $(date +%s -d '1 minute') \
    $(seth --to-uint256 $(seth --to-wei 100000000 eth)) \
    $FOUNDERS_KEY
  )

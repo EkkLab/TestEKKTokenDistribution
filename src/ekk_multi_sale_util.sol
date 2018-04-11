@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
-import "./eos_sale.sol";
+import "./ekk_multi_sale.sol";
 
 contract EOSSaleUtil {
-    EOSSale  public  sale;
+    /* EOSSale  public  sale;
 
     function EOSSaleUtil(EOSSale _sale) {
         sale = _sale;
@@ -25,5 +25,5 @@ contract EOSSaleUtil {
         for (uint i = 0; i < 351; i++) {
             result[i] = sale.claimed(i, user);
         }
-    }
+    } */
 }

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+export SALE=0x1118cfc4e05a87bf00378ba2c606a6b66d64b517
+export SETH_ABI=$(seth abi 'event LogBuy(uint window, address user, uint amount);')
+
+seth events 0x1118cfc4e05a87bf00378ba2c606a6b66d64b517

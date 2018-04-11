@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+/* pragma solidity ^0.4.11;
 
 import "ds-exec/exec.sol";
 import "ds-test/test.sol";
@@ -7,7 +7,7 @@ import "ds-guard/guard.sol";
 
 import "gnosis-multisig/MultiSigWallet.sol";
 
-import "./eos_sale.sol";
+import "./ekk_multi_sale.sol";
 
 contract TestUser is DSExec {
     TestableEOSSale sale;
@@ -465,4 +465,4 @@ contract MultisigTests is DSTest {
         uint id = multisig.submitTransaction(sale, 0, calldata); // submit and confirm
         user1.doConfirm(id); // confirm and execute
     }
-}
+} */

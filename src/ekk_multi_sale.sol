@@ -32,7 +32,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     event LogCollect  (uint amount);
     event LogFreeze   ();
 
-    function EkkDist(
+    function EKKDist(
         uint     _numberOfDays,
         uint128  _totalSupply,
         uint     _openTime,
@@ -64,13 +64,13 @@ contract EKKDist is DSAuth, DSExec, DSMath {
         assert(ekk.authority() == DSAuthority(0));
         assert(ekk.totalSupply() == 0);
 
-        ekk = ekk;
-        ekk.mint(totalSupply);
+        EKK = ekk;
+        EKK.mint(totalSupply);
 
         // Address 0xb1 is provably non-transferrable
-        ekk.push(0xb1, foundersAllocation);
+        EKK.push(0xb1, foundersAllocation);
         keys[0xb1] = foundersKey;
-        LogRegister(0xb1, foundersKey);
+        emit LogRegister(0xb1, foundersKey);
     }
 
     function time() constant returns (uint) {
@@ -86,7 +86,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     function dayFor(uint timestamp) constant returns (uint) {
         return timestamp < startTime
             ? 0
-            : sub(timestamp, startTime) / 23 hours + 1;
+            : sub(timestamp, startTime) / 10 minutes + 1;
     }
 
     function createOnDay(uint day) constant returns (uint) {
@@ -110,7 +110,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
             assert(dailyTotals[day] <= limit);
         }
 
-        LogBuy(day, msg.sender, msg.value);
+        emit LogBuy(day, msg.sender, msg.value);
     }
 
     function buy() payable {
@@ -138,9 +138,9 @@ contract EKKDist is DSAuth, DSExec, DSMath {
         var reward     = wmul(price, userTotal);
 
         claimed[day][msg.sender] = true;
-        ekk.push(msg.sender, reward);
+        EKK.push(msg.sender, reward);
 
-        LogClaim(day, msg.sender, reward);
+        emit LogClaim(day, msg.sender, reward);
     }
 
     function claimAll() {
@@ -158,20 +158,20 @@ contract EKKDist is DSAuth, DSExec, DSMath {
 
         keys[msg.sender] = key;
 
-        LogRegister(msg.sender, key);
+        emit LogRegister(msg.sender, key);
     }
 
     // Crowdsale owners can collect ETH any number of times
     function collect() auth {
         assert(today() > 0); // Prevent recycling during window 0
         exec(msg.sender, this.balance);
-        LogCollect(this.balance);
+        emit LogCollect(this.balance);
     }
 
     // Anyone can freeze the token 1 day after the sale ends
     function freeze() {
         assert(today() > numberOfDays + 1);
-        ekk.stop();
-        LogFreeze();
+        EKK.stop();
+        emit LogFreeze();
     }
 }
