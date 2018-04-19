@@ -31,6 +31,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     event LogRegister (address user, string key);
     event LogCollect  (uint amount);
     event LogFreeze   ();
+    event ChangedTokenOwner(address owenr);
 
     function EKKDist(
         uint     _numberOfDays,
@@ -67,9 +68,8 @@ contract EKKDist is DSAuth, DSExec, DSMath {
         EKK = ekk;
         EKK.mint(totalSupply);
 
-        // Address 0xb1 is provably non-transferrable
-        EKK.push(0xb1, foundersAllocation);
-        keys[0xb1] = foundersKey;
+        EKK.push(foundersKey, foundersAllocation);
+        /* keys[0xb1] = foundersKey; */
         emit LogRegister(0xb1, foundersKey);
     }
 
@@ -86,7 +86,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     function dayFor(uint timestamp) constant returns (uint) {
         return timestamp < startTime
             ? 0
-            : sub(timestamp, startTime) / 30 minutes + 1;
+            : sub(timestamp, startTime) / 23 hours + 1;
     }
 
     function createOnDay(uint day) constant returns (uint) {
@@ -164,14 +164,25 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     // Crowdsale owners can collect ETH any number of times
     function collect() auth {
         assert(today() > 0); // Prevent recycling during window 0
-        exec(msg.sender, this.balance);
-        emit LogCollect(this.balance);
+        exec(msg.sender, address(this).balance);
+        emit LogCollect(address(this).balance);
     }
 
     // Anyone can freeze the token 1 day after the sale ends
-    function freeze() {
+    function freeze() auth{
         assert(today() > numberOfDays + 1);
         EKK.stop();
         emit LogFreeze();
+    }
+    function unfreeze() auth{
+        assert(today() > numberOfDays + 1);
+        EKK.start();
+        emit LogFreeze();
+    }
+    function resetTokenOwner(address _NewContract) auth {
+      require(now > startTime + numberOfDays * 1 days);
+      require(address(this).balance == 0);
+      EKK.setOwner(_NewContract);
+      emit ChangedTokenOwner(address(_NewContract));
     }
 }
