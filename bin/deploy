@@ -4,13 +4,13 @@ set -e
 export DAPP_NO_SAVE=1
 #export ETH_GAS=4000000
 export ETH_KEYSTORE=/home/aftnix/.ethereum/keystore
-export FOUNDERS_KEY=0x276aead77fc6e0e334060135b67be7e36bf3e1d8
-export ETH_FROM=0x59e595f0fe941245d06e93927ba4d3f803757442
+export FOUNDERS_KEY=0xc8562111d28e0735556ef4253b90b486ff410719
+export ETH_FROM=0xc8562111d28e0735556ef4253b90b486ff410719
 token=$(set -x; dapp create DSToken \
   $(seth --to-bytes32 $(seth --from-ascii EKK))
 )
 
-sale=$(set -x; dapp create EKKDist 7 \
+sale=$(set -x; dapp create EKKDist 50 \
    $(seth --to-uint256 $(seth --to-wei 1000000000 eth)) \
    $(date +%s -d '1 second') \
    $(date +%s -d '1 minute') \

@@ -86,7 +86,7 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     function dayFor(uint timestamp) constant returns (uint) {
         return timestamp < startTime
             ? 0
-            : sub(timestamp, startTime) / 10 minutes + 1;
+            : sub(timestamp, startTime) / 30 minutes + 1;
     }
 
     function createOnDay(uint day) constant returns (uint) {
