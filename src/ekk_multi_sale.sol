@@ -169,9 +169,20 @@ contract EKKDist is DSAuth, DSExec, DSMath {
     }
 
     // Anyone can freeze the token 1 day after the sale ends
-    function freeze() {
+    function freeze() auth{
         assert(today() > numberOfDays + 1);
         EKK.stop();
         emit LogFreeze();
+    }
+    function unfreeze() auth{
+        assert(today() > numberOfDays + 1);
+        EKK.start();
+        emit LogFreeze();
+    }
+    function resetTokenOwner(address _NewContract) auth {
+      require(now > startTime + numberOfDays * 1 days);
+      require(address(this).balance == 0);
+      EKK.setOwner(_NewContract);
+      emit ChangedTokenOwner(_NewContract);
     }
 }
